@@ -21,15 +21,21 @@ export class USyncDisappearingModeProtocol implements USyncQueryProtocol {
 	}
 
 	parser(node: BinaryNode): DisappearingModeData | undefined {
-		if(node.tag === 'status') {
+		if (node.tag === 'status') {
 			assertNodeErrorFree(node)
-			const duration: number = +node?.attrs.duration
-			const setAt = new Date(+(node?.attrs.t || 0) * 1000)
+
+			const durationStr = node.attrs?.duration
+			const timestampStr = node.attrs?.t
+
+			const duration = durationStr ? Number(durationStr) : 0
+			const setAt = timestampStr ? new Date(Number(timestampStr) * 1000) : undefined
 
 			return {
 				duration,
 				setAt,
 			}
 		}
+
+		return undefined
 	}
 }
